@@ -3,9 +3,11 @@
 import lightning
 import os
 import torch
+import torchvision
 import urllib.request
 
 import filesystem as fs
+import image
 
 # Get git root directory
 git_root = fs.git_root()
@@ -24,7 +26,7 @@ os.makedirs(name=DATA_PATH, exist_ok=True)
 
 # Path to the folder where the pretrained models are saved. Create the directory if it
 # does not exist yet.
-CHECKPOINT_PATH = os.path.join(git_root, "saved_models")  #
+CHECKPOINT_PATH = os.path.join(git_root, "saved_models")
 os.makedirs(name=CHECKPOINT_PATH, exist_ok=True)
 
 # GitHub URL where saved models are stored for this tutorial
@@ -47,3 +49,13 @@ for file_name in pretrained_files:
             urllib.request.urlretrieve(url=file_url, filename=file_path)
         except urllib.error.HTTPError as e:
             print(f"Error: Failed to download {file_url}: {e}")
+
+# Transformations applied on each image => make them a tensor and discretize
+transform = torchvision.transforms.Compose(
+    [torchvision.transforms.ToTensor(), image.discretize]
+)
+
+# Load the training dataset
+train_dataset = torchvision.datasets.MNIST(
+    root=DATA_PATH, transform=transform, download=True
+)
