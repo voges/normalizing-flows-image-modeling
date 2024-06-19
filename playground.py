@@ -49,6 +49,8 @@ for file_name in pretrained_files:
             urllib.request.urlretrieve(url=file_url, filename=file_path)
         except urllib.error.HTTPError as e:
             print(f"Error: Failed to download {file_url}: {e}")
+    else:
+        print(f"File {file_path} already exists.")
 
 # Transformations applied on each image => make them a tensor and discretize
 transform = torchvision.transforms.Compose(
